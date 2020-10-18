@@ -62,7 +62,7 @@ class ViewController: UIViewController, Injectable, Instantiatable {
             .bind(to: nameButtonContainer.rx.input)
             .disposed(by: disposeBag)
         
-        nameButtonContainer._output.subscribe(onNext: { output in
+        nameButtonContainer.rx.output.subscribe(onNext: { output in
             guard case let .name(name) = output else {
                 assertionFailure("not match")
                 return
