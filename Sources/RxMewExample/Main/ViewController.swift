@@ -55,11 +55,11 @@ class ViewController: UIViewController, Injectable, Instantiatable {
             .map { NameButtonViewController.Input(name: $0) }
         
         nameLabelInput
-            .bind(to: nameLabelContainer._input)
+            .bind(to: nameLabelContainer.rx.input)
             .disposed(by: disposeBag)
         
         nameButtonInput
-            .bind(to: nameButtonContainer._input)
+            .bind(to: nameButtonContainer.rx.input)
             .disposed(by: disposeBag)
         
         nameButtonContainer._output.subscribe(onNext: { output in
