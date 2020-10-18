@@ -48,4 +48,3 @@ class NameButtonViewController: UIViewController, Injectable, Instantiatable, In
         handler?(.name(name))
     }
 }
-

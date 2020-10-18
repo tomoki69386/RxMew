@@ -3,25 +3,35 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-// TODO: Property names will be changed later.
-
-public extension ContainerView.Container where Content: Injectable {
-    var _input: Binder<Content.Input?> {
-        return Binder<Content.Input?>(self) { base, input in
-            base.input(input)
-        }
+public extension ContainerView.Container {
+    var rx: Reactive<ContainerView.Container<Content, Parent>> {
+        return Reactive(self)
     }
-    var inputs: Binder<[Content.Input]> {
-        return Binder<[Content.Input]>(self) { base, inputs in
-            base.inputs(inputs)
+    struct Reactive<Base: ContainerView.Container<Content, Parent>> {
+        let base: Base
+        public init(_ base: Base) {
+            self.base = base
         }
     }
 }
 
-public extension ContainerView.Container where Content: Interactable {
-    var _output: Observable<Content.Output> {
-        return Observable<Content.Output>.create { [weak self] observer in
-            self?.output({ (output) in
+public extension ContainerView.Container.Reactive where Content: Injectable {
+    var input: Binder<Base.Input> {
+        return Binder(self.base) { base, input in
+            base.input(input)
+        }
+    }
+    var inputs: Binder<[Base.Input]> {
+        return Binder(self.base) { base, inputs in
+            base.inputs(inputs.compactMap { $0 })
+        }
+    }
+}
+
+public extension ContainerView.Container.Reactive where Content: Interactable {
+    var output: Observable<Base.Output> {
+        return Observable<Base.Output>.create { [base] observer in
+            base.output({ output in
                 observer.onNext(output)
             })
             return Disposables.create()
